@@ -65,6 +65,14 @@
         android:label="@string/settings_title"
         android:screenOrientation="portrait"/>
 
+    <!-- Barcode Search Activity -->
+    <activity
+        android:name="com.google.mlkit.md.BarcodeSearchActivity"
+        android:exported="false"
+        android:screenOrientation="portrait"/>
+
+
+
   </application>
 </manifest>
 
