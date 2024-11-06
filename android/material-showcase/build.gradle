@@ -1,16 +1,94 @@
+//// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//
+//buildscript {
+//    ext.kotlin_version = '1.7.0'  // Update to a compatible Kotlin version
+//
+//    repositories {
+//        google()
+//        mavenLocal()
+//        jcenter()
+//
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:7.0.4'
+////        classpath 'com.android.tools.build:gradle:8.1.0' // Update to the latest version
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+//    }
+//}
+//
+//plugins {
+//    id 'com.github.ben-manes.versions' version '0.36.0'
+//}
+//
+//allprojects {
+//    repositories {
+//        google()
+//        jcenter()
+//        mavenLocal()
+//    }
+//
+//    // See: https://github.com/ben-manes/gradle-versions-plugin
+//    dependencyUpdates.resolutionStrategy = {
+//        componentSelection { rules ->
+//            rules.all { selection ->
+//                boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+//                    selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+//                }
+//                if (rejected) {
+//                    selection.reject('Release candidate')
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//configurations {
+//    ktlint
+//}
+//
+//dependencies {
+//    ktlint "com.github.shyiko:ktlint:0.31.0"
+//}
+//
+//task("ktlint", type: JavaExec, group: "verification") {
+//    def outputDir = "${project.buildDir}/reports/ktlint/"
+//    def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
+//    def outputFile = "${outputDir}ktlint-checkstyle-report.xml"
+//
+//    // See:
+//    // https://medium.com/@vanniktech/making-your-gradle-tasks-incremental-7f26e4ef09c3
+//    inputs.files(inputFiles)
+//    outputs.dir(outputDir)
+//
+//    description = "Check Kotlin code style."
+//    classpath = configurations.ktlint
+//    main = "com.github.shyiko.ktlint.Main"
+//    args = [
+//        "--format",
+//        "--android",
+//        "--reporter=plain",
+//        "--reporter=checkstyle,output=${outputFile}",
+//        "**/*.kt",
+//    ]
+//}
+//
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.8.22'
+    ext.kotlin_version = '1.8.20'  // Ensure compatibility with the Kotlin version
+
     repositories {
         google()
-        jcenter()
         mavenLocal()
+        mavenCentral()  // Use mavenCentral() instead of jcenter()
     }
     dependencies {
-//        classpath 'com.android.tools.build:gradle:7.0.4'
-        classpath 'com.android.tools.build:gradle:8.1.0' // Update to the latest version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.0.0'  // Use a compatible AGP version with Gradle 8.0
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"  // Update Kotlin plugin to match
     }
 }
 
@@ -21,11 +99,11 @@ plugins {
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenLocal()
+        mavenCentral()  // Use mavenCentral() instead of jcenter()
     }
 
-    // See: https://github.com/ben-manes/gradle-versions-plugin
+    // Dependency updates configuration
     dependencyUpdates.resolutionStrategy = {
         componentSelection { rules ->
             rules.all { selection ->
@@ -45,6 +123,7 @@ configurations {
 }
 
 dependencies {
+
     ktlint "com.github.shyiko:ktlint:0.31.0"
 }
 
@@ -53,8 +132,6 @@ task("ktlint", type: JavaExec, group: "verification") {
     def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
     def outputFile = "${outputDir}ktlint-checkstyle-report.xml"
 
-    // See:
-    // https://medium.com/@vanniktech/making-your-gradle-tasks-incremental-7f26e4ef09c3
     inputs.files(inputFiles)
     outputs.dir(outputDir)
 
@@ -62,11 +139,11 @@ task("ktlint", type: JavaExec, group: "verification") {
     classpath = configurations.ktlint
     main = "com.github.shyiko.ktlint.Main"
     args = [
-        "--format",
-        "--android",
-        "--reporter=plain",
-        "--reporter=checkstyle,output=${outputFile}",
-        "**/*.kt",
+            "--format",
+            "--android",
+            "--reporter=plain",
+            "--reporter=checkstyle,output=${outputFile}",
+            "**/*.kt",
     ]
 }
 
