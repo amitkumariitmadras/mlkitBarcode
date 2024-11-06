@@ -3,11 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    namespace "com.google.mlkit.md" // Use your package name from AndroidManifest.xml
+
+    // Update compileSdkVersion and targetSdkVersion
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.google.mlkit.md"
-        minSdkVersion 19
-        targetSdkVersion 31
+        minSdkVersion 21
+        targetSdkVersion 34 // Updated from 31 to 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -52,11 +55,21 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // CameraX core library
+    def camerax_version = "1.4.0"
+    implementation "androidx.camera:camera-core:$camerax_version"
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-video:$camerax_version"
+    implementation "androidx.camera:camera-view:$camerax_version"
+    implementation "androidx.camera:camera-extensions:$camerax_version"
+
     // Barcode model
     implementation 'com.google.mlkit:barcode-scanning:17.0.3'
 
     // Object feature and model
     implementation 'com.google.mlkit:object-detection:17.0.0'
+
     // Custom model
     implementation 'com.google.mlkit:object-detection-custom:17.0.0'
 

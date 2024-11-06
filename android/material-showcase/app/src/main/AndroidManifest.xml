@@ -2,12 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.google.mlkit.md"
-    android:installLocation="auto">
+    android:installLocation="internalOnly">
 
+  <!-- Add necessary features and permissions -->
   <uses-feature android:name="android.hardware.camera"/>
+  <uses-feature android:name="android.hardware.microphone" android:required="true"/>
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
   <application
       android:allowBackup="false"
@@ -17,10 +22,12 @@
       android:theme="@style/AppTheme"
       tools:ignore="GoogleAppIndexingWarning">
 
+    <!-- Google Play Services metadata -->
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"/>
 
+    <!-- Main Launcher Activity -->
     <activity
         android:name="com.google.mlkit.md.MainActivity"
         android:exported="true"
@@ -31,37 +38,101 @@
       </intent-filter>
     </activity>
 
+    <!-- Other Activities in Your App -->
     <activity
         android:name="com.google.mlkit.md.LiveObjectDetectionActivity"
         android:exported="false"
-        android:screenOrientation="portrait">
-    </activity>
+        android:screenOrientation="portrait"/>
 
     <activity
         android:name="com.google.mlkit.md.LiveBarcodeScanningActivity"
         android:exported="false"
-        android:screenOrientation="portrait">
-    </activity>
+        android:screenOrientation="portrait"/>
 
     <activity
         android:name="com.google.mlkit.md.StaticObjectDetectionActivity"
         android:exported="false"
-        android:screenOrientation="portrait">
-    </activity>
+        android:screenOrientation="portrait"/>
 
     <activity
         android:name="com.google.mlkit.md.CustomModelObjectDetectionActivity"
         android:exported="false"
-        android:screenOrientation="portrait">
-    </activity>
+        android:screenOrientation="portrait"/>
 
     <activity
         android:name="com.google.mlkit.md.settings.SettingsActivity"
         android:exported="false"
         android:label="@string/settings_title"
-        android:screenOrientation="portrait">
-    </activity>
+        android:screenOrientation="portrait"/>
 
   </application>
-
 </manifest>
+
+<!--    -->
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--package="com.google.mlkit.md"-->
+<!--android:installLocation="auto">-->
+
+<!--<uses-feature android:name="android.hardware.camera"/>-->
+
+<!--<uses-permission android:name="android.permission.INTERNET"/>-->
+<!--<uses-permission android:name="android.permission.CAMERA"/>-->
+
+<!--<application-->
+<!--    android:allowBackup="false"-->
+<!--    android:icon="@drawable/logo_mlkit"-->
+<!--    android:label="@string/app_name"-->
+<!--    android:supportsRtl="true"-->
+<!--    android:theme="@style/AppTheme"-->
+<!--    tools:ignore="GoogleAppIndexingWarning">-->
+
+<!--  <meta-data-->
+<!--      android:name="com.google.android.gms.version"-->
+<!--      android:value="@integer/google_play_services_version"/>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.MainActivity"-->
+<!--      android:exported="true"-->
+<!--      android:screenOrientation="portrait">-->
+<!--    <intent-filter>-->
+<!--      <action android:name="android.intent.action.MAIN"/>-->
+<!--      <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--    </intent-filter>-->
+<!--  </activity>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.LiveObjectDetectionActivity"-->
+<!--      android:exported="false"-->
+<!--      android:screenOrientation="portrait">-->
+<!--  </activity>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.LiveBarcodeScanningActivity"-->
+<!--      android:exported="false"-->
+<!--      android:screenOrientation="portrait">-->
+<!--  </activity>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.StaticObjectDetectionActivity"-->
+<!--      android:exported="false"-->
+<!--      android:screenOrientation="portrait">-->
+<!--  </activity>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.CustomModelObjectDetectionActivity"-->
+<!--      android:exported="false"-->
+<!--      android:screenOrientation="portrait">-->
+<!--  </activity>-->
+
+<!--  <activity-->
+<!--      android:name="com.google.mlkit.md.settings.SettingsActivity"-->
+<!--      android:exported="false"-->
+<!--      android:label="@string/settings_title"-->
+<!--      android:screenOrientation="portrait">-->
+<!--  </activity>-->
+
+<!--</application>-->
+
+<!--</manifest>-->

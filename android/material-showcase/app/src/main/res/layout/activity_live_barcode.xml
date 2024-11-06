@@ -5,19 +5,61 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
-  <com.google.mlkit.md.camera.CameraSourcePreview
-      android:id="@+id/camera_preview"
+  <!-- CameraX PreviewView -->
+  <androidx.camera.view.PreviewView
+      android:id="@+id/viewFinder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent" />
 
-    <include layout="@layout/camera_preview_overlay"/>
+  <!-- GraphicOverlay for drawing detection graphics -->
+  <com.google.mlkit.md.camera.GraphicOverlay
+      android:id="@+id/graphicOverlay"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 
-  </com.google.mlkit.md.camera.CameraSourcePreview>
+  <!-- Include your overlays or UI elements -->
+  <include layout="@layout/camera_preview_overlay"/>
 
+  <!-- Top action bar -->
   <include
       layout="@layout/top_action_bar_in_live_camera"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="top"/>
 
+  <!-- Prompt Chip (if used in your code) -->
+  <com.google.android.material.chip.Chip
+      android:id="@+id/bottom_prompt_chip"
+      style="@style/Widget.MaterialComponents.Chip.Action"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|center_horizontal"
+      android:layout_marginBottom="16dp"
+      android:text="Point at a barcode" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:keepScreenOn="true">-->
+
+<!--  <com.google.mlkit.md.camera.CameraSourcePreview-->
+<!--      android:id="@+id/camera_preview"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="match_parent">-->
+
+<!--    <include layout="@layout/camera_preview_overlay"/>-->
+
+<!--  </com.google.mlkit.md.camera.CameraSourcePreview>-->
+
+<!--  <include-->
+<!--      layout="@layout/top_action_bar_in_live_camera"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:layout_gravity="top"/>-->
+
+<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
