@@ -21,7 +21,7 @@ class BarcodeSearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Set up the UI
+        // Set up the UI for the barcode search along with video replay and other features
         setContentView(R.layout.activity_barcode_search)
         videoView = findViewById(R.id.videoView)
         barcodeInput = findViewById(R.id.barcodeInput)
