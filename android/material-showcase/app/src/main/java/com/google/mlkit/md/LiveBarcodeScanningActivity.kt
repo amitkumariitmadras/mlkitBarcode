@@ -1040,6 +1040,295 @@
 //    }
 //}
 
+//
+//package com.google.mlkit.md
+//
+//import android.annotation.SuppressLint
+//import android.content.ContentValues
+//import android.content.Intent
+//import android.net.Uri
+//import android.os.Build
+//import android.os.Bundle
+//import android.os.Handler
+//import android.provider.MediaStore
+//import android.util.Log
+//import android.view.View
+//import android.widget.TextView
+//import android.widget.Toast
+//import androidx.appcompat.app.AppCompatActivity
+//import androidx.camera.core.*
+//import androidx.camera.lifecycle.ProcessCameraProvider
+//import androidx.camera.video.*
+//import androidx.camera.view.PreviewView
+//import androidx.core.app.ActivityCompat
+//import androidx.core.content.ContextCompat
+//import com.google.android.material.floatingactionbutton.FloatingActionButton
+//import com.google.mlkit.md.barcodedetection.BarcodeField
+//import com.google.mlkit.vision.barcode.common.Barcode
+//import com.google.mlkit.vision.barcode.BarcodeScanning
+//import com.google.mlkit.vision.common.InputImage
+//import java.text.SimpleDateFormat
+//import java.util.*
+//import java.util.concurrent.ExecutorService
+//import java.util.concurrent.Executors
+//
+//class LiveBarcodeScanningActivity : AppCompatActivity(), View.OnClickListener {
+//
+//    private var preview: Preview? = null
+//    private var videoCapture: VideoCapture<Recorder>? = null
+//    private var imageAnalysis: ImageAnalysis? = null
+//    private lateinit var cameraExecutor: ExecutorService
+//    private var recording: Recording? = null
+//    private var recordingStartTime: Long = 0L
+//    private var videoFileUri: Uri? = null
+//    private val detectedBarcodes = mutableListOf<BarcodeData>()
+//
+//    private val REQUIRED_PERMISSIONS = arrayOf(
+//        android.Manifest.permission.CAMERA,
+//        android.Manifest.permission.RECORD_AUDIO
+//    )
+//    private val REQUEST_CODE_PERMISSIONS = 10
+//
+//    private lateinit var recordButton: FloatingActionButton
+//    private lateinit var recordingDuration: TextView
+//    private var isRecording = false
+//    private val handler = Handler()
+//    private lateinit var updateDurationRunnable: Runnable
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_live_barcode)
+//
+//        // Request permissions
+//        if (allPermissionsGranted()) {
+//            startCamera()
+//        } else {
+//            ActivityCompat.requestPermissions(
+//                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+//            )
+//        }
+//
+//        cameraExecutor = Executors.newSingleThreadExecutor()
+//
+//        // Initialize record button and recording duration TextView
+//        recordButton = findViewById(R.id.record_button)
+//        recordingDuration = findViewById(R.id.recording_duration)
+//
+//        // Set click listener for record button
+//        recordButton.setOnClickListener {
+//            toggleRecording()
+//        }
+//    }
+//
+//    private fun startCamera() {
+//        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+//
+//        cameraProviderFuture.addListener({
+//            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+//
+//            // Preview
+//            preview = Preview.Builder()
+//                .build()
+//                .also {
+//                    it.setSurfaceProvider(findViewById<PreviewView>(R.id.viewFinder).surfaceProvider)
+//                }
+//
+//            // VideoCapture
+//            val recorder = Recorder.Builder()
+//                .setQualitySelector(QualitySelector.from(Quality.HIGHEST))
+//                .build()
+//            videoCapture = VideoCapture.withOutput(recorder)
+//
+//            // ImageAnalysis for barcode scanning
+//            imageAnalysis = ImageAnalysis.Builder()
+//                .build()
+//                .also {
+//                    it.setAnalyzer(cameraExecutor, BarcodeAnalyzer())
+//                }
+//
+//            // Select back camera
+//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//
+//            try {
+//                // Unbind use cases before rebinding
+//                cameraProvider.unbindAll()
+//
+//                // Bind use cases to camera
+//                cameraProvider.bindToLifecycle(
+//                    this, cameraSelector, preview, videoCapture, imageAnalysis
+//                )
+//
+//            } catch (exc: Exception) {
+//                Log.e(TAG, "Use case binding failed", exc)
+//            }
+//
+//        }, ContextCompat.getMainExecutor(this))
+//    }
+//
+//    @SuppressLint("MissingPermission")
+//    private fun startRecording() {
+//        val videoCapture = this.videoCapture ?: return
+//
+//        val name = SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
+//            .format(System.currentTimeMillis())
+//        val contentValues = ContentValues().apply {
+//            put(MediaStore.MediaColumns.DISPLAY_NAME, "BarcodeVideo_$name")
+//            put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/BarcodeVideos")
+//            }
+//        }
+//
+//        val outputOptions = MediaStoreOutputOptions.Builder(
+//            contentResolver,
+//            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+//        ).setContentValues(contentValues).build()
+//
+//        recording = videoCapture.output.prepareRecording(this, outputOptions)
+//            .withAudioEnabled()
+//            .start(ContextCompat.getMainExecutor(this)) { recordEvent ->
+//                when (recordEvent) {
+//                    is VideoRecordEvent.Start -> {
+//                        recordingStartTime = System.currentTimeMillis()
+//                        Log.d(TAG, "Recording started")
+//                    }
+//                    is VideoRecordEvent.Finalize -> {
+//                        if (!recordEvent.hasError()) {
+//                            val msg = "Video capture succeeded: ${recordEvent.outputResults.outputUri}"
+//                            Log.d(TAG, msg)
+//                            videoFileUri = recordEvent.outputResults.outputUri
+//                            navigateToSearchActivity()
+//                        } else {
+//                            recording?.close()
+//                            recording = null
+//                            Log.e(TAG, "Video capture ends with error: ${recordEvent.error}")
+//                        }
+//                    }
+//                }
+//            }
+//    }
+//
+//    private fun stopRecording() {
+//        recording?.stop()
+//        recording = null
+//    }
+//
+//    private fun toggleRecording() {
+//        if (isRecording) {
+//            // Stop recording
+//            stopRecording()
+//            recordButton.setImageResource(R.drawable.ic_record)
+//            isRecording = false
+//            recordingDuration.visibility = View.GONE
+//            handler.removeCallbacks(updateDurationRunnable)
+//        } else {
+//            // Start recording
+//            startRecording()
+//            recordButton.setImageResource(R.drawable.ic_stop)
+//            isRecording = true
+//            recordingDuration.visibility = View.VISIBLE
+//            recordingStartTime = System.currentTimeMillis()
+//            updateRecordingDuration()
+//        }
+//    }
+//
+//    private fun updateRecordingDuration() {
+//        updateDurationRunnable = object : Runnable {
+//            override fun run() {
+//                val currentTime = System.currentTimeMillis()
+//                val elapsedMillis = currentTime - recordingStartTime
+//                val seconds = (elapsedMillis / 1000) % 60
+//                val minutes = (elapsedMillis / (1000 * 60)) % 60
+//                val duration = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+//                recordingDuration.text = duration
+//                handler.postDelayed(this, 1000)
+//            }
+//        }
+//        handler.post(updateDurationRunnable)
+//    }
+//
+//    private fun handleDetectedBarcode(barcode: Barcode) {
+//        val barcodeValue = barcode.rawValue ?: return
+//        val currentTime = System.currentTimeMillis()
+//        val timestamp = currentTime - recordingStartTime
+//
+//        val barcodeData = BarcodeData(
+//            value = barcodeValue,
+//            timestamp = timestamp
+//        )
+//        detectedBarcodes.add(barcodeData)
+//
+//        runOnUiThread {
+//            Toast.makeText(this, "Barcode detected: $barcodeValue", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    private inner class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+//        private val scanner = BarcodeScanning.getClient()
+//
+//        @androidx.camera.core.ExperimentalGetImage
+//        override fun analyze(imageProxy: ImageProxy) {
+//            val mediaImage = imageProxy.image
+//            if (mediaImage != null) {
+//                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+//                scanner.process(image)
+//                    .addOnSuccessListener { barcodes ->
+//                        for (barcode in barcodes) {
+//                            handleDetectedBarcode(barcode)
+//                        }
+//                    }
+//                    .addOnFailureListener { e ->
+//                        Log.e(TAG, "Barcode analysis error", e)
+//                    }
+//                    .addOnCompleteListener {
+//                        imageProxy.close()
+//                    }
+//            } else {
+//                imageProxy.close()
+//            }
+//        }
+//    }
+//
+//    private fun navigateToSearchActivity() {
+//        val intent = Intent(this, BarcodeSearchActivity::class.java)
+//        intent.putExtra("videoUri", videoFileUri.toString())
+//        intent.putExtra("barcodeDataList", ArrayList(detectedBarcodes))
+//        startActivity(intent)
+//        finish()
+//    }
+//
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        stopRecording()
+//        cameraExecutor.shutdown()
+//    }
+//
+//    override fun onClick(v: View?) {
+//        // Handle button clicks if needed
+//    }
+//
+//    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+//        ContextCompat.checkSelfPermission(baseContext, it) == android.content.pm.PackageManager.PERMISSION_GRANTED
+//    }
+//
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+//    ) {
+//        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+//            if (allPermissionsGranted()) {
+//                startCamera()
+//            } else {
+//                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show()
+//                finish()
+//            }
+//        }
+//    }
+//
+//    companion object {
+//        private const val TAG = "LiveBarcodeActivity"
+//    }
+//}
+
 
 package com.google.mlkit.md
 
@@ -1063,7 +1352,6 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.mlkit.md.barcodedetection.BarcodeField
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -1248,6 +1536,8 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun handleDetectedBarcode(barcode: Barcode) {
+        if (!isRecording) return  // Only detect barcodes when recording
+
         val barcodeValue = barcode.rawValue ?: return
         val currentTime = System.currentTimeMillis()
         val timestamp = currentTime - recordingStartTime
@@ -1258,6 +1548,7 @@ class LiveBarcodeScanningActivity : AppCompatActivity(), View.OnClickListener {
         )
         detectedBarcodes.add(barcodeData)
 
+        // Update the Toast message immediately with the newly detected barcode
         runOnUiThread {
             Toast.makeText(this, "Barcode detected: $barcodeValue", Toast.LENGTH_SHORT).show()
         }
