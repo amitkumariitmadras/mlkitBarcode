@@ -31,7 +31,7 @@
 
   <!-- Prompt Chip (if used in your code) -->
   <com.google.android.material.chip.Chip
-      android:id="@+id/bottom_prompt_chip"
+      android:id="@+id/bottom_prompt_chips"
       style="@style/Widget.MaterialComponents.Chip.Action"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
