@@ -37,7 +37,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|center_horizontal"
       android:layout_marginBottom="16dp"
-      android:text="Point at a barcode" />
+      android:text="Click There --->> " />
 
   <!-- Record Button to start/stop recording -->
   <com.google.android.material.floatingactionbutton.FloatingActionButton
