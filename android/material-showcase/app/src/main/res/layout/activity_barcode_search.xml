@@ -2,23 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
+    <!-- Input for Barcode -->
     <EditText
         android:id="@+id/barcodeInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter barcode value" />
+        android:hint="Enter barcode value"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Search Button -->
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search" />
+        android:text="Search"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Video View for Playing Barcode Video -->
     <VideoView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
