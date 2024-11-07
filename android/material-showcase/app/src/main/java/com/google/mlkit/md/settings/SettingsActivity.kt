@@ -19,7 +19,7 @@ package com.google.mlkit.md.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.mlkit.md.R
-
+// hello checking
 /** Hosts the preference fragment to configure settings.  */
 class SettingsActivity : AppCompatActivity() {
 
